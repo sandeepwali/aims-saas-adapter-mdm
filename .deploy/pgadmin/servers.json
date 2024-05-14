@@ -1,0 +1,14 @@
+{
+    "Servers": {
+        "1": {
+            "Name": "postgresql-db",
+            "Group": "Servers",
+            "Port": 5432,
+            "Username": "aims",
+            "Host": "aims-db-postgresql",
+            "SSLMode": "prefer",
+            "MaintenanceDB": "AIMS_SAAS_ADAPTER_MDM",
+            "PassFile": "/pgpass"
+        }
+    }
+}

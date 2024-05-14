@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: aims-db-postgresql
+#  annotations:
+#    gitlab-date: 2022-05-25T08_07_17
+spec:
+  serviceName: "aims-db-postgresql"
+  replicas: 1
+  selector: {}
+  template:
+    spec:
+      #securityContext:
+      #  runAsNonRoot: true
+      #  runAsUser: 999
+      #  runAsGroup: 999
+      #  fsGroup: 999
+      imagePullSecrets:
+        - name: aims-docker-registry-secret
+      containers:
+        - name: aims-db-postgresql
+          image: aims-db-postgresql-image
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "1G"
+              cpu: "1"
+            requests:
+              memory: "500M"
+              cpu: "500m"
+          volumeMounts:
+          - mountPath: "/var/lib/postgresql"
+            name: aims-db-postgresql-volume
+            subPath: null
+          readinessProbe:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - -e
+              - |
+                exec pg_isready -U "aims" -h 127.0.0.1 -p 5432
+                [ -f /opt/bitnami/postgresql/tmp/.initialized ] || [ -f /bitnami/postgresql/.initialized ]
+            failureThreshold: 6
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          env:
+            - name: TZ
+              value: Europe/Berlin
+            # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+          envFrom:
+            - configMapRef:
+                name: aims-db-postgresql-env
+            - secretRef:
+                optional: true
+                name: aims-db-postgresql-env
+      volumes:
+      - name: aims-db-postgresql-volume
+        persistentVolumeClaim:
+          claimName: aims-db-postgresql-pvc

@@ -1,0 +1,24 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: rabbitmq-issuer
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: rabbitmq-tls
+spec:
+  commonName: rabbitmq-tls
+  secretName: rabbitmq-tls
+  duration: 78840h0m0s
+  privateKey:
+    algorithm: ECDSA
+    size: 521
+  issuerRef:
+    name: rabbitmq-issuer
+    kind: Issuer
+    group: cert-manager.io
+---
+

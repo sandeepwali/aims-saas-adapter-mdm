@@ -1,0 +1,26 @@
+
+namespace: aims-saas-adapter-mdm
+
+commonLabels:
+    app.kubernetes.io/name: aims-db-postgresql
+    app.kubernetes.io/instance: aims-saas-adapter-mdm
+
+resources:
+  - pvc.yaml
+  - statefulset.yaml
+  - service.yaml
+
+images:
+ - name: aims-db-postgresql-image
+   newName: harbor.solumesl.com/aims-4/aims-postgresql
+   newTag: "4.5.0.0-r0-DEV-common"
+
+configMapGenerator:
+  - name: aims-db-postgresql-env
+    literals:
+      - POSTGRES_MULTIPLE_DATABASES="AIMS_SAAS_ADAPTER_MDM"
+secretGenerator:
+  - name: aims-db-postgresql-env
+    literals:
+      - POSTGRES_USER="aims"
+      - POSTGRES_PASSWORD="aims"

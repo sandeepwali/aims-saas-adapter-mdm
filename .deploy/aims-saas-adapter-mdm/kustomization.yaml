@@ -1,0 +1,35 @@
+namespace: aims-saas-adapter-mdm
+
+commonLabels:
+  app.kubernetes.io/name: aims-saas-adapter-mdm
+  app.kubernetes.io/instance: aims-saas-adapter-mdm
+
+resources:
+  - deployment.yaml
+  - service.yaml
+  - istio.yaml
+
+images:
+  - name: aims-saas-adapter-mdm-image
+    newName: harbor.solumesl.com/aims-saas/aims-saas-adapter-mdm
+    newTag: "0.0.1-SNAPSHOT"
+
+configMapGenerator:
+  - name: aims-saas-adapter-mdm-env
+    literals:
+      - server.port="8080"
+      - management.server.port="9090"
+      - server.servlet.context-path="/common/aims-saas-adapter-mdm"
+secretGenerator:
+  - name: aims-saas-adapter-mdm-env
+    literals:
+      - solum.saas.server.username=saas-client-common@svc.solumesl.com
+      - solum.saas.server.password=PaOm7WH4UhV1oQmBbQFnuQ==
+      - spring.datasource.url=jdbc:postgresql://aims-db-postgresql:5432/AIMS_SAAS_ADAPTER_MDM
+      - spring.datasource.username=aims
+      - spring.datasource.password=aims
+      - spring.rabbitmq.host=aims-rabbitmq-headless
+      - spring.rabbitmq.port=5672
+      - spring.rabbitmq.username=aims
+      - spring.rabbitmq.password=aims
+      - spring.rabbitmq.virtual-host=aims-vhost

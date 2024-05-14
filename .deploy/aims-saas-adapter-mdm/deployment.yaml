@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aims-saas-adapter-mdm
+  annotations:
+    gitlab-date: 2022-05-25T09_22_34
+spec:
+  replicas: 1
+  selector: {}
+  template:
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
+      imagePullSecrets:
+        - name: aims-docker-registry-secret
+      containers:
+        - name: aims-saas-adapter-mdm
+          image: aims-saas-adapter-mdm-image
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "2Gi"
+              cpu: "1"
+            requests:
+              memory: "1.3Gi"
+              cpu: "120m"
+          livenessProbe:
+            initialDelaySeconds: 45
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+            failureThreshold: 5
+            httpGet:
+              path: /actuator/health/liveness
+              port: 9090
+          readinessProbe:
+            initialDelaySeconds: 45
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+            failureThreshold: 5
+            httpGet:
+              path: /actuator/health/readiness
+              port: 9090
+          env:
+            # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+            - name: TZ
+              value: Europe/Berlin
+            - name: logging.file.name
+              value: /tmp/mdm.log
+          envFrom:
+            - configMapRef:
+                name: aims-saas-adapter-mdm-env
+            - secretRef:
+                optional: true
+                name: aims-saas-adapter-mdm-env

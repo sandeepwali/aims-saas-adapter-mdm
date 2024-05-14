@@ -1,0 +1,2 @@
+aims-db-postgresql:5432:postgres:aims:aims
+aims-db-postgresql:5432:AIMS_SAAS_ADAPTER_MDM:aims:aims

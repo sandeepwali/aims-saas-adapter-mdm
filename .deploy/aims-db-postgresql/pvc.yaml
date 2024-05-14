@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: aims-db-postgresql-pvc
+spec:
+  storageClassName: "default" # Empty string must be explicitly set otherwise default StorageClass will be set
+  #volumeName: aims-db-postgresql-volume
+  #volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi

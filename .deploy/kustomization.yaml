@@ -1,0 +1,16 @@
+namespace: aims-saas-adapter-mdm
+
+resources:
+  - aims-db-postgresql
+  - aims-rabbitmq
+  - aims-saas-adapter-mdm
+  - pgadmin
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+secretGenerator:
+  - name: aims-pgadmin-pgadmin4
+    behavior: merge
+    files:
+      - pgadmin/servers.json
